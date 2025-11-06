@@ -1,10 +1,13 @@
 package com.ecommerce.ecom.service;
 
 import com.ecommerce.ecom.model.Category;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -27,13 +30,34 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categories.stream().filter(
                 c -> c.getCategoryId()
                         .equals(categoryId))
-                .findFirst().orElse(null);
-
-        if (category == null) {
-            return "Category with categoryId " + categoryId + " not found";
-        }
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Category with categoryId " + categoryId + " not found"
+                ));
 
         categories.remove(category);
-        return "Category with categoryId " + category.getCategoryId() + " deleted successfully";
+        return "Category with categoryId "
+                + category.getCategoryId()
+                + " deleted successfully";
+    }
+
+    @Override
+    public Category updateCategory(Long categoryId, Category category) {
+        Optional<Category> optionalCategory = categories.stream()
+                .filter(c -> c.getCategoryId().equals(categoryId))
+                .findFirst();
+
+        if(optionalCategory.isPresent()) {
+            Category matchingCategory = optionalCategory.get();
+            matchingCategory.setCategoryName(category.getCategoryName());
+            return matchingCategory;
+        } else {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Category with categoryId " + categoryId + " not found"
+            );
+        }
+
     }
 }
