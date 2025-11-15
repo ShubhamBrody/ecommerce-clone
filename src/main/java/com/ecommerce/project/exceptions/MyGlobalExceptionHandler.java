@@ -39,4 +39,11 @@ public class MyGlobalExceptionHandler {
         APIResponse apiResponse = new APIResponse(errorMessage, false);
         return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(DuplicateEntryFoundException.class)
+    public ResponseEntity<APIResponse> myDuplicateEntryFoundException(DuplicateEntryFoundException e) {
+        String errorMessage = e.getMessage();
+        APIResponse apiResponse = new APIResponse(errorMessage, false);
+        return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+    }
 }
