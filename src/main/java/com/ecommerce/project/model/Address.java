@@ -42,7 +42,7 @@ public class Address {
     private String pincode;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     public Address(String street, String buildingName, String city, String state, String country, String pincode) {
